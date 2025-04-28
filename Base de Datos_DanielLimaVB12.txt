@@ -1,0 +1,150 @@
+CREATE DATABASE ventaspeliculas;
+USE ventaspeliculas;
+
+CREATE TABLE Direccion (
+    idDireccion INT PRIMARY KEY,
+    Direccion VARCHAR(45),
+    Ciudad VARCHAR(45),
+    Pais VARCHAR(45)
+);
+
+insert into Direccion(idDireccion,Direccion,Ciudad,Pais)
+values
+(1,"Zona 11 ","Ciudad de Guatemala","Guatemala"),
+(2,"Zona 5 ","Ciudad de Guatemala","Guatemala"),
+(3,"Zona 6 ","Ciudad de Guatemala","Guatemala"),
+(4,"Zona 16 ","Ciudad de Guatemala","Guatemala"),
+(5,"Zona 1 ","Ciudad de Guatemala","Guatemala");
+
+CREATE TABLE Cliente (
+    idCliente INT PRIMARY KEY,
+    Nombre VARCHAR(45),
+    Apellido VARCHAR(45),
+    Edad INT,
+    Direccion_idDireccion INT,
+    FOREIGN KEY (Direccion_idDireccion) REFERENCES Direccion(idDireccion)
+);
+
+insert into Cliente(idCliente,Nombre,Apellido,Edad,Direccion_idDireccion)
+values
+(1,"Juliana ","Lima",21,3),
+(2,"Guillermo ","Lima",60,2),
+(3,"Juliana ","Messi",37,1),
+(4,"Cristiano ","Ronaldo",40,4),
+(5,"Lamine ","Yamal",17,5);
+
+CREATE TABLE Categoria (
+    idCategoria INT PRIMARY KEY,
+    Nombre VARCHAR(45)
+);
+
+insert into Categoria(idCategoria,Nombre)
+values
+(1,"Terror"),
+(2,"Futurista"),
+(3,"Comedia "),
+(4,"Accion"),
+(5,"Anime");
+
+CREATE TABLE Peliculas (
+    idPeliculas INT PRIMARY KEY,
+    Nombre VARCHAR(45),
+    Duracion INT,
+    Descripcion TEXT,
+    Año INT,
+    Categoria_idCategoria INT,
+    FOREIGN KEY (Categoria_idCategoria) REFERENCES Categoria(idCategoria)
+);
+
+insert into peliculas(idPeliculas,Nombre,Duracion,Descripcion,Año,Categoria_idCategoria)
+values
+(1, 'Terrifier', 125, 'En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.', 2018, 1),
+(2, '¿Qué pasó ayer? Parte 2', 142, 'Con la esperanza de evitar el caos que marcó su despedida de soltero en Las Vegas, Stu opta por lo que él cree que será una celebración tranquila en Tailandia.', 2011, 3),
+(3, 'pokemon1', 126, 'Ciencitifocs crean a mewto pero se rebela contra sus creadores y vengarse de la humanidad', 1987, 5),
+(4, 'Toy Story', 121, 'Woody, el juguete favorito de Andy, se siente amenazado por la inesperada llegada de Buzz Lightyear, el guardián del espacio.', 1995, 4),
+(5, 'pokemon1', 144, 'Un joven une fuerzas con el detective Pikachu para desentrañar el misterio detrás de la desaparición de su padre. El dúo dinámico descubre una trama tortuosa que representa una amenaza para el universo Pokémon.', 2019, 5);
+
+
+CREATE TABLE Inventario (
+    idCopiasPeliculas INT PRIMARY KEY,
+    Peliculas_idPeliculas INT,
+    Disponible TINYINT,
+    FOREIGN KEY (Peliculas_idPeliculas) REFERENCES Peliculas(idPeliculas)
+);
+
+insert into Inventario(idCopiasPeliculas,Peliculas_idPeliculas,Disponible)
+values
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 0),
+(4, 4, 1),
+(5, 5, 1);
+
+CREATE TABLE Renta (
+    idRenta INT PRIMARY KEY,
+    Fecha_Renta DATE,
+    Fecha_Entrega DATE,
+    Inventario_idCopiasPeliculas INT,
+    Cliente_idCliente INT,
+    FOREIGN KEY (Inventario_idCopiasPeliculas) REFERENCES Inventario(idCopiasPeliculas),
+    FOREIGN KEY (Cliente_idCliente) REFERENCES Cliente(idCliente)
+);
+
+insert into renta(idRenta,Fecha_Renta,Fecha_Entrega,Inventario_idCopiasPeliculas,Cliente_idCliente)
+values
+(1, '2025-05-10', '2025-06-10', 1, 1),
+(2, '2025-05-09', '2025-06-09', 2, 2),
+(3, '2025-05-06', '2025-06-06', 4, 3),
+(4, '2025-05-04', '2025-06-04', 3, 4),
+(5, '2025-05-03', '2025-06-03', 4, 5);
+
+CREATE TABLE Empleado (
+    idEmpleado INT PRIMARY KEY,
+    Nombre VARCHAR(45),
+    Apellido VARCHAR(45),
+    Cargo VARCHAR(45),
+    Fecha_Contratacion DATE,
+    Telefono VARCHAR(20)
+);
+
+insert into Empleado(idEmpleado,Nombre,Apellido,Cargo,Fecha_Contratacion,Telefono)
+values
+(1, 'Pedri', 'Gonzales', 'Gerente', '2021-05-12', '987654'),
+(2, 'Jude', 'Bellingham', 'Atención al Cliente', '2020-08-02', '321987'),
+(3, 'Jules', 'Kounde', 'Cajero', '2022-05-05', '321654'),
+(4, 'Pau', 'Cubarsi', 'Auxiliar de Renta', '2023-20-01', '44785145'),
+(5, 'Frenkie', 'De Jong', 'Administrador de Sistemas', '2024-06-12', '9638525');
+
+CREATE TABLE Reserva (
+    idReserva INT PRIMARY KEY,
+    Fecha_Reserva DATE,
+    Cliente_idCliente INT,
+    Inventario_idCopiasPeliculas INT,
+    FOREIGN KEY (Cliente_idCliente) REFERENCES Cliente(idCliente),
+    FOREIGN KEY (Inventario_idCopiasPeliculas) REFERENCES Inventario(idCopiasPeliculas)
+);
+
+insert into Reserva(idReserva,Fecha_Reserva,Cliente_idCliente,Inventario_idCopiasPeliculas)
+values
+(1, '2025-07-15', 1, 3),
+(2, '2025-07-16', 2, 1),
+(3, '2025-07-17', 3, 4),
+(4, '2025-07-18', 4, 2),
+(5, '2025-07-19', 5, 5);
+
+select * from Direccion;
+select * from Cliente;
+select * from Cliente where Nombre = "Juliana";
+select * from Categoria order by Nombre asc;
+select * from Peliculas;
+
+delete from Inventario where Peliculas_idPeliculas in(
+select idPeliculas from Peliculas where Nombre = "pokemon1"
+);
+select * from Peliculas where not Nombre = "pokemon1";
+
+select * from Peliculas order by Año desc;
+select * from Inventario;
+select * from Renta;
+select * from Empleado;
+select * from Reserva;
